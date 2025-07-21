@@ -2,7 +2,7 @@
 
 
 <h1 style="display: flex; justify-content: center; align-items: center; gap: 10px; margin: 0;">
-Internalizing Reasoning Efficiency via Length-Adaptive Policy Optimization
+LAPO: Internalizing Reasoning Efficiency via Length-Adaptive Policy Optimization
 </h1>
 <p align="center"><em></em></p>
 
