@@ -168,7 +168,7 @@ After this stage, the model in your Stage 2 output directory is the final, LAPO-
 
 ---
 
-## 📊 Evaluation
+## Evaluation
 
 LAPO-trained models consistently achieve higher accuracy with significantly fewer tokens compared to baselines and other efficient reasoning methods. (If you want to evaluate your model, please refer to [lighteval](https://github.com/huggingface/lighteval))
 
