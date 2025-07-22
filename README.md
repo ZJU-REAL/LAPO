@@ -91,37 +91,72 @@ Our framework is built upon **OpenRLHF**.
 
 ## 🚀 Training Pipeline
 
-LAPO's training is a two-stage process.
+LAPO's training is a detailed two-stage process that requires careful configuration. Please follow these steps precisely to replicate our results.
 
-### Stage 1: Discovery
+### Step 0: Pre-Training Configuration
 
-The model learns the statistical distribution of optimal reasoning lengths.
+Before running any training, you must configure paths in the shell scripts and the reward function file.
+
+**1. Configure Training Scripts:**
+
+Open the following two shell scripts and set the paths for your environment:
+*   `./config/deepscaler-1.5B-grpo-stage1.sh`
+*   `./config/deepscaler-1.5B-grpo-stage2.sh`
+
+In both files, you **must** modify these variables to match your setup:
+*   `PRETRAIN_MODEL_PATH`: Path to the base model.
+*   `DATASET_PATH`: Path to your training dataset file.
+*   `OUTPUT_DIR`: Directory where checkpoints and results will be saved.
+
+**2. Configure Reward Function for Stage 1:**
+
+The reward function needs to know where to save the length statistics collected during Stage 1.
+
+*   **File to edit:** `./examples/scripts/reward_func_stage2.py`
+*   **Action:** Inside this file, locate the reward function for Stage 1 and set the path for the output `q-length_mapping.json` file. This path should correspond to the `OUTPUT_DIR` you set in the Stage 1 script.
+
+### Step 1: Run Stage 1 Training (Discovery)
+
+This stage runs the discovery process to learn the statistical distribution of optimal reasoning lengths.
 
 ```bash
-# Run the Discovery stage training
-torchrun --nproc_per_node=4 train_lapo.py \
-    --pretrain_model_path /path/to/base_model \
-    --dataset /path/to/your_dataset.json \
-    --lapo_stage 1 \
-    --reward_alpha 0.7 \
-    --output_dir ./checkpoints/lapo_stage1
+bash ./config/deepscaler-1.5B-grpo-stage1.sh
 ```
-This stage outputs a `problem_to_length_mapping.json` file, which is crucial for the next stage.
 
-### Stage 2: Internalization
+Upon completion, this stage will generate a raw `q_length_mapping.json` file in the output directory you specified.
 
-The model learns to use the discovered lengths as self-proposed plans.
+### Step 2: Process the Length Mapping File
+
+The raw mapping file needs to be cleaned and processed before it can be used in the next stage. We provide a script for this.
+
+*   **Action:** Run the `process.py` script.
+*   **Example Command:**
+    ```bash
+    python process.py \
+        --input_path /path/to/your/stage1_output/q_length_mapping.json \
+        --output_path /path/to/your/stage1_output/clean_mapping.json
+    ```
+
+This will create a `clean_mapping.json` file, which is required for Stage 2.
+
+### Step 3: Configure Prompt for Stage 2
+
+For the Internalization stage, the model needs to receive the length guidance in its prompt. You must enable this feature in the dataset code.
+
+*   **File to edit:** `./openrlhf/datasets/prompts_dataset.py`
+*   **Action:** In this file, locate the prompt formatting section. **Uncomment the lines** responsible for adding the length-guidance string (e.g., `"I will answer the question with {length} tokens."`) to the prompt.
+
+### Step 4: Run Stage 2 Training (Internalization)
+
+With the cleaned mapping file and the modified prompt logic, you can now start the final training stage. This stage teaches the model to internalize its reasoning budget.
+
+*   **Important:** Before running, ensure the `deepscaler-1.5B-grpo-stage2.sh` script is configured to use the path to your `clean_mapping.json`.
 
 ```bash
-# Run the Internalization stage training
-torchrun --nproc_per_node=4 train_lapo.py \
-    --pretrain_model_path ./checkpoints/lapo_stage1 \
-    --dataset /path/to/your_dataset.json \
-    --lapo_stage 2 \
-    --reward_beta 0.8 \
-    --length_mapping_path ./checkpoints/lapo_stage1/problem_to_length_mapping.json \
-    --output_dir ./checkpoints/lapo_stage2
+bash ./config/deepscaler-1.5B-grpo-stage2.sh
 ```
+
+After this stage, the model in your Stage 2 output directory is the final, LAPO-trained model, capable of adaptive reasoning.
 
 ---
 
