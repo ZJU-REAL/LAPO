@@ -80,7 +80,7 @@ def reward_func(queries, prompts, labels, tokenizer, **kwargs):
         "median_length": min_length
     }
 
-    log_file = "your_file_path"
+    log_file = "all_mapping_file"
 
     with open(log_file, "a+", encoding="utf-8") as f:
         f.seek(0)
