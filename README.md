@@ -70,12 +70,19 @@ Our framework is built upon **OpenRLHF**.
     ```bash
     conda create -n lapo python=3.10
     conda activate lapo
+
+    # pip install
+    pip install openrlhf
+
+    # install vLLM 0.8.5.post1
+    pip install vllm==0.8.5.post1
     ```
 
 2.  **Install dependencies:**
     ```bash
     git clone https://github.com/zju-real/LAPO.git
     cd LAPO
+    pip install -e .
     pip install -r requirements.txt
     ```
     Please ensure you have a PyTorch version compatible with your CUDA drivers installed.
