@@ -1,18 +1,18 @@
 ray job submit --address="http://127.0.0.1:8265" \
    -- python3 -m openrlhf.cli.train_ppo_ray \
    --ref_num_nodes 1 \
-   --ref_num_gpus_per_node 8 \
+   --ref_num_gpus_per_node 4 \
    --actor_num_nodes 1 \
-   --actor_num_gpus_per_node 8 \
-   --vllm_num_engines 4 \
+   --actor_num_gpus_per_node 4 \
+   --vllm_num_engines 2 \
    --vllm_tensor_parallel_size 2 \
    --colocate_all_models \
    --vllm_gpu_memory_utilization 0.7 \
    --num_episodes 3 \
-   --pretrain ./outputs/deepscaler-1.5B-GRPO-stage_1 \
-   --remote_rm_url /data/zju-46/xy/OpenRLHF/examples/scripts/reward_func_1_stage2.py \
-   --save_path ./outputs/deepscaler-1.5B-GRPO-stage2-1 \
-   --micro_train_batch_size 1 \
+   --pretrain stage1_model_path \
+   --remote_rm_url ./examples/scripts/reward_func_stage2.py \
+   --save_path output_path \
+   --micro_train_batch_size 8 \
    --train_batch_size 128 \
    --micro_rollout_batch_size 8 \
    --rollout_batch_size 128 \
@@ -29,7 +29,7 @@ ray job submit --address="http://127.0.0.1:8265" \
    --zero_stage 3 \
    --bf16 \
    --actor_learning_rate 1e-6 \
-   --prompt_data parquet@../experiment/datasets/math_level3to5_data_processed_with_qwen_prompt/data \
+   --prompt_data data_path \
    --input_key question \
    --label_key answer \
    --normalize_reward \
@@ -39,6 +39,7 @@ ray job submit --address="http://127.0.0.1:8265" \
    --enforce_eager \
    --vllm_enable_sleep \
    --deepspeed_enable_sleep \
-   --save_steps 100 \
-   --ckpt_path ./outputs/deepscaler-1.5B-GRPO-stage2-1 \
-   --use_tensorboard ./outputs/deepscaler-1.5B-GRPO-stage2-1
+   --save_steps 20 \
+   --save_hf_ckpt \
+   --ckpt_path checkpoint_path \
+   --use_tensorboard tensorboard_path
