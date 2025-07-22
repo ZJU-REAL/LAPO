@@ -1,7 +1,7 @@
 import json
 
-input_file = 'stage1_save_file'
-output_file = 'clean_file'
+input_file = 'all_mapping_file'
+output_file = 'clean_mapping_file'
 
 prompt_dict = {}
 
@@ -19,7 +19,7 @@ with open(output_file, 'w', encoding='utf-8') as f_out:
     for data in prompt_dict.values():
         f_out.write(json.dumps(data, ensure_ascii=False) + '\n')
 
-final_file = 'mapping_file'
+final_file = 'final_mapping_file'
 q2len = {}
 
 with open(output_file, 'r', encoding='utf-8') as f:
