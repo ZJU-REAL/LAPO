@@ -9,12 +9,12 @@ ray job submit --address="http://127.0.0.1:8265" \
    --colocate_all_models \
    --vllm_gpu_memory_utilization 0.7 \
    --num_episodes 3 \
-   --pretrain /data/zju-46/xy/experiment/models/DeepScaleR-1.5B-Preview \
-   --remote_rm_url /data/zju-46/xy/OpenRLHF/examples/scripts/reward_func_1.py \
-   --save_path ./outputs/deepscaler-1.5B-GRPO-acc \
-   --micro_train_batch_size 2 \
+   --pretrain model_path \
+   --remote_rm_url ./examples/scripts/reward_func_stage1.py \
+   --save_path output_path \
+   --micro_train_batch_size 8 \
    --train_batch_size 128 \
-   --micro_rollout_batch_size 1 \
+   --micro_rollout_batch_size 8 \
    --rollout_batch_size 128 \
    --n_samples_per_prompt 8 \
    --max_epochs 1 \
@@ -29,7 +29,7 @@ ray job submit --address="http://127.0.0.1:8265" \
    --zero_stage 3 \
    --bf16 \
    --actor_learning_rate 1e-6 \
-   --prompt_data ../experiment/datasets/combined_data/combined_train_dataset.json \
+   --prompt_data data_path \
    --input_key problem \
    --label_key answer \
    --normalize_reward \
@@ -39,6 +39,8 @@ ray job submit --address="http://127.0.0.1:8265" \
    --enforce_eager \
    --vllm_enable_sleep \
    --deepspeed_enable_sleep \
-   --use_tensorboard ./outputs/deepscaler-1.5B-GRPO-acc
-   #   --save_steps 100 \
-#   --ckpt_path ./outputs/deepscaler-1.5B-GRPO-acc \
+   --save_steps 20 \
+   --save_hf_ckpt \
+   --ckpt_path checkpoint_path \
+   --use_tensorboard tensorboard_path
+     
