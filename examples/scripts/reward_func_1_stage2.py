@@ -4,7 +4,7 @@ import json
 import math
 import re
 from typing import Dict
-import statistics  # 导入用于计算统计量的库
+import statistics
 import random
 
 from numpy import dtype
@@ -32,13 +32,10 @@ def format_reward(r):
         return 0.0
 
 def extract_predicted_tokens(text):
-    # 使用正则表达式查找<think>标签内的token数量
     match = re.search(r'I will answer the question with\s*(\d+)\s*tokens', text)
     if match:
-        # 如果找到匹配，返回第一个捕获组中的数字，即token的数量
         return int(match.group(1))
     else:
-        # 如果没有找到匹配，返回None或其它你希望的值
         return 0
 
 
@@ -76,36 +73,20 @@ def reward_func(queries, prompts, labels, tokenizer):
             count += 1
             lengths.append(length)
 
+    median_length = statistics.median(lengths) if lengths else 0
     mean_length = sum_length / count if count > 0 else 0
-    median_length = statistics.median(lengths) if lengths else 0  # 如果lengths为空，则中位数为0
+    min_length = min(lengths) if lengths else 0
 
-    # input_file = '/home/xy/median_length_process.json'
-    input_file = '/home/xy/median_length_process_dict.json'
-    # input_file_0 = '/home/xy/mean_length_process.json'
-    lock = FileLock(input_file + '.lock')  # 加一把文件锁！
+    input_file = 'stage1_file_path'
+    lock = FileLock(input_file + '.lock')
 
-
-    # if median_length != 0:
-    #     if median_length < tokens:
-    #         prompt_key = get_substring_up_to_last_gt(prompt_0)
-    #         with open(input_file, "r", encoding="utf-8") as f:
-    #             q2len = json.load(f)
-    #
-    #         q2len[prompt_key] = median_length
-    #         with open(input_file, "w", encoding="utf-8") as f:
-    #             json.dump(q2len, f, ensure_ascii=False, indent=2)
-    #             f.flush()
-    #             os.fsync(f.fileno())
-
-    if (tokens == 2048 and median_length != 0) or (median_length != 0 and median_length < tokens):
-    # if tokens == 2048 and median_length != 0:
+    if (tokens == 4096 and median_length != 0) or (median_length != 0 and median_length < tokens):
         prompt_key = get_substring_up_to_last_gt(prompt_0)
+        prompt_key = prompt_0
         with lock:
-            # 先安全读取
             with open(input_file, "r", encoding="utf-8") as f:
                 q2len = json.load(f)
 
-            # 更新
             q2len[prompt_key] = median_length
 
             with open(input_file, "w", encoding="utf-8") as f:
@@ -113,34 +94,21 @@ def reward_func(queries, prompts, labels, tokenizer):
                 f.flush()
                 os.fsync(f.fileno())
 
-
     for query, prompt, answer in zip(queries, prompts, labels):
         response = query[len(prompt) - 51:]
-        # print(f"response :{response} NNNNNNNNNNN")
-        # think_length = extract_think_length(response, tokenizer)
 
         acc = accuracy_reward(response, answer)
         format = format_reward(response)
         length = len(tokenizer.encode(response))
 
-        # 计算长度奖励
         sigma = 120
-
-        if acc > 0:  # 只有答案正确时才计算长度奖励
-            if tokens != 2048:
-                # 使用预设的目标长度
+        if acc > 0:
+            if tokens != 4096:
                 len_reward = math.exp(-((length - tokens) ** 2) / (2 * (sigma ** 2)))
-
-                # len_reward = max(1.0 - abs(length - tokens) * 0.002, 0.0)
             else:
-                # 探索阶段
                 len_reward = math.exp(-((length - median_length) ** 2) / (2 * (sigma ** 2)))
-
-                # len_reward = max(1.0 - abs(length - median_length) * 0.002, 0.0)
         else:
-            len_reward = 0.0  # 错误答案不给长度奖励
-
-        # len_reward = math.exp(-((length - tokens) ** 2) / (2 * (sigma ** 2))) if tokens != 2048 else 0.0
+            len_reward = 0.0
 
         rewards.append(1.0 * acc + 0.8 * len_reward)
 
@@ -160,11 +128,8 @@ def reward_func(queries, prompts, labels, tokenizer):
     }
 
 def get_substring_up_to_last_gt(s):
-    # 找到最后一个'>'字符的位置
     index = s.rfind('>')
     if index != -1:
-        # 截取到最后一个'>'字符（包含该字符）
         return s[:index + 1]
     else:
-        # 如果没有找到'>'，返回原始字符串或者空字符串
         return s
