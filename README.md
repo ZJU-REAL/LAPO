@@ -148,7 +148,7 @@ For the Internalization stage, the model needs to receive the length guidance in
 
 ### Step 4: Run Stage 2 Training (Internalization)
 
-With the cleaned mapping file and the modified prompt logic, you can now start the final training stage. This stage teaches the model to internalize its reasoning budget.
+With the final mapping file and the modified prompt logic, you can now start the final training stage. This stage teaches the model to internalize its reasoning budget.
 
 *   **Important:** Before running, ensure the `deepscaler-1.5B-grpo-stage2.sh` script is configured to use the path to your `clean_mapping.json`.
 
