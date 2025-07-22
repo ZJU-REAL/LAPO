@@ -104,16 +104,16 @@ Open the following two shell scripts and set the paths for your environment:
 *   `./config/deepscaler-1.5B-grpo-stage2.sh`
 
 In both files, you **must** modify these variables to match your setup:
-*   `PRETRAIN_MODEL_PATH`: Path to the base model.
-*   `DATASET_PATH`: Path to your training dataset file.
-*   `OUTPUT_DIR`: Directory where checkpoints and results will be saved.
+*   `pretrain`: Path to the base model.
+*   `prompt_data`: Path to your training dataset file.
+*   `save_path`: Directory where checkpoints and results will be saved.
 
 **2. Configure Reward Function for Stage 1:**
 
 The reward function needs to know where to save the length statistics collected during Stage 1.
 
-*   **File to edit:** `./examples/scripts/reward_func_stage2.py`
-*   **Action:** Inside this file, locate the reward function for Stage 1 and set the path for the output `q-length_mapping.json` file. This path should correspond to the `OUTPUT_DIR` you set in the Stage 1 script.
+*   **File to edit:** `./examples/scripts/reward_func_stage1.py`
+*   **Action:** Inside this file, locate the reward function for Stage 1 and set the path for the output `all_mapping_file` file (json).
 
 ### Step 1: Run Stage 1 Training (Discovery)
 
@@ -123,7 +123,7 @@ This stage runs the discovery process to learn the statistical distribution of o
 bash ./config/deepscaler-1.5B-grpo-stage1.sh
 ```
 
-Upon completion, this stage will generate a raw `q_length_mapping.json` file in the output directory you specified.
+Upon completion, this stage will generate a raw `all_mapping_file` file (json) in the output directory you specified.
 
 ### Step 2: Process the Length Mapping File
 
@@ -137,7 +137,7 @@ The raw mapping file needs to be cleaned and processed before it can be used in 
         --output_path /path/to/your/stage1_output/clean_mapping.json
     ```
 
-This will create a `clean_mapping.json` file, which is required for Stage 2.
+This will create a `final_mapping.json` file, which is required for Stage 2.
 
 ### Step 3: Configure Prompt for Stage 2
 
