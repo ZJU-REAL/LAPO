@@ -5,7 +5,7 @@ import json
 
 system_prompt = "You are a helpful assistant. A conversation between User and Assistant. The user asks a question, and the Assistant solves it. The Assistant first thinks about the reasoning process in the mind and then provides the user with the answer. The reasoning process is enclosed within <think> </think> tags, respectively, i.e., <think> reasoning process here </think> answer here ."
 
-input_file = '/home/xy/median_length_process_dict.json'
+input_file = 'mapping_path'
 
 def preprocess_data(data, input_template=None, input_key="input", label_key=None, apply_chat_template=None) -> str:
     if apply_chat_template:
