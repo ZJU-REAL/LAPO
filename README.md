@@ -44,7 +44,6 @@ Large reasoning models often "overthink," generating excessively long and comput
 
 <div align="center">
   <img src="./figures/motivation.png" alt="Overthinking Problem" style="width: 90%; height: auto;" />
-  <p><em>Without LAPO, models are verbose. With LAPO, they learn to be concise and efficient.</em></p>
 </div>
 
 LAPO is built on a new paradigm: what if models could learn the appropriate reasoning depth themselves? Our key insight is that the lengths of successful solutions contain valuable signals about a problem's intrinsic complexity. LAPO is designed to:
