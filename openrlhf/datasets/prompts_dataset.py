@@ -23,7 +23,7 @@ def preprocess_data(data, input_template=None, input_key="input", label_key=None
         #     length = q2len[prompt]
         #
         # if length == 0.0:
-        #     length = 2048
+        #     length = 4096
         # else:
         #     length = int(length)
         #
