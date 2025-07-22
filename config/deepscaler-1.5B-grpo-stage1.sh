@@ -1,3 +1,5 @@
+ray start --head --node-ip-address 0.0.0.0 --num-gpus 4
+
 ray job submit --address="http://127.0.0.1:8265" \
    -- python3 -m openrlhf.cli.train_ppo_ray \
    --ref_num_nodes 1 \
