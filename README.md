@@ -127,17 +127,25 @@ Upon completion, this stage will generate a raw `all_mapping_file` file (json) i
 
 ### Step 2: Process the Length Mapping File
 
-The raw mapping file needs to be cleaned and processed before it can be used in the next stage. We provide a script for this.
+The raw mapping data from Stage 1 must be processed into a clean format for Stage 2. We provide a script, `process.py`, for this task.
 
-*   **Action:** Run the `process.py` script.
-*   **Example Command:**
-    ```bash
-    python process.py \
-        --input_path /path/to/your/stage1_output/q_length_mapping.json \
-        --output_path /path/to/your/stage1_output/clean_mapping.json
-    ```
+**1. Configure Paths in `process.py`:**
 
-This will create a `final_mapping.json` file, which is required for Stage 2.
+Before running the script, you **must** open `process.py` with a text editor and manually update the file path variables at the top. This tells the script where to find your raw data and where to save the final processed file.
+
+**Edit these lines in `process.py`:**
+
+```python
+# process.py
+
+# --- Configuration ---
+# ‼️ ACTION REQUIRED: Replace these placeholder paths with your actual file paths.
+
+# Input file from Stage 1 training
+raw_mapping_file = '/path/to/your/stage1_output/all_mapping_file'
+
+# Final output file for Stage 2 training
+final_mapping_file = '/path/to/your/stage1_output/final_mapping_file'
 
 ### Step 3: Configure Prompt for Stage 2
 
@@ -160,16 +168,27 @@ After this stage, the model in your Stage 2 output directory is the final, LAPO-
 
 ---
 
-## 📊 Results
+## 📊 Evaluation
 
-LAPO-trained models consistently achieve higher accuracy with significantly fewer tokens compared to baselines and other efficient reasoning methods.
+LAPO-trained models consistently achieve higher accuracy with significantly fewer tokens compared to baselines and other efficient reasoning methods. (If you want to evaluate your model, please refer to [lighteval](https://github.com/huggingface/lighteval))
 
-| **Model** | **MATH-500** | **AIME2024** | **AMC-23** | **OlympiadBench** | **Avg. Pass@1** | **Avg. #Tok** |
+### 📊 Results
+The table below presents the Pass@1 accuracy and average token count on MATH-500, AIME2024, AMC-23, and OlympiadBench. LAPO's ability to achieve higher scores with fewer tokens is evident.
+
+| Model / Method | MATH-500 | AIME2024 | AMC-23 | OlympiadBench | **Avg. Pass@1** | **Avg. #Tok** |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| Base (DeepScaleR) | 85.8% | 35.5% | 74.2% | 54.6% | 62.5% | 6229 |
-| ThinkPrune-4k | 86.6% | 35.5% | 76.3% | 55.7% | 63.5% | 4094 |
+| **_Base: DeepScaleR-1.5B-Preview_** | | | | | | |
+| Base Model | 85.8% | 35.5% | 74.2% | 54.6% | 62.5% | 6229 |
+| L1-Exact | 80.6% | 24.4% | 70.9% | 48.8% | 56.2% | 2278 |
 | L1-Max | 81.9% | 24.9% | 72.7% | 50.5% | 57.5% | 2541 |
-| **LAPO-I (Ours)** | **86.3%** | **38.1%** | **78.3%** | **56.3%** | **64.8%** | **3832** |
+| ThinkPrune-4k | 86.6% | 35.5% | 76.3% | 55.7% | 63.5% | 4094 |
+| **+ LAPO-D (Ours)** | 86.4% | 37.6% | 77.6% | 56.1% | 64.4% | 4116 |
+| **+ LAPO-I (Ours)** | **86.3%** | **38.1%** | **78.3%** | **56.3%** | **64.8%** | **3832** |
+| | | | | | | |
+| **_Base: DeepSeek-R1-distill-Qwen-1.5B_** | | | | | | |
+| Base Model | 83.1% | 30.3% | 68.3% | 50.0% | 57.9% | 8086 |
+| **+ LAPO-D (Ours)** | **84.7%** | 28.5% | **72.2%** | 51.3% | **59.2%** | 5177 |
+| **+ LAPO-I (Ours)** | 84.3% | 29.3% | 71.2% | **51.7%** | 59.1% | 4775 |
 
 ---
 
@@ -183,10 +202,14 @@ Our RL training code is built upon the excellent [OpenRLHF](https://github.com/O
 If you find LAPO useful in your research, please consider citing our work:
 
 ```bibtex
-@article{wu2025lapo,
-  title={{LAPO: Internalizing Reasoning Efficiency via Length-Adaptive Policy Optimization}},
-  author={Wu, Xingyu and Yan, Yuchen and Lyu, Shangke and Wu, Linjuan and Qiu, Yiwen and Shen, Yongliang and Lu, Weiming and Shao, Jian and Xiao, Jun and Zhuang, Yueting},
-  journal={arXiv preprint arXiv:2507.15758},
-  year={2025}
+@misc{wu2025lapointernalizingreasoningefficiency,
+      title={LAPO: Internalizing Reasoning Efficiency via Length-Adaptive Policy Optimization}, 
+      author={Xingyu Wu and Yuchen Yan and Shangke Lyu and Linjuan Wu and Yiwen Qiu and Yongliang Shen and Weiming Lu and Jian Shao and Jun Xiao and Yueting Zhuang},
+      year={2025},
+      eprint={2507.15758},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2507.15758}, 
+}
 }
 ```
