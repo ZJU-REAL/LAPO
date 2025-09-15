@@ -10,7 +10,8 @@ LAPO: Internalizing Reasoning Efficiency via Length-Adaptive Policy Optimization
 
 [![Paper](https://img.shields.io/badge/paper-A42C25?style=for-the-badge&logo=arxiv&logoColor=white)](http://arxiv.org/abs/2507.15758) [![alphaXiv](https://img.shields.io/badge/discussion-A42C25?style=for-the-badge&logo=arxiv&logoColor=white&color=blue
 )](https://www.alphaxiv.org/abs/2507.15758) [![Github](https://img.shields.io/badge/LAPO-000000?style=for-the-badge&logo=github&logoColor=000&logoColor=white)](https://github.com/zju-real/LAPO)
-
+[![LAPO-D](https://img.shields.io/badge/LAPO--D-1f86c2?style=for-the-badge&logo=huggingface&logoColor=yellow)](https://huggingface.co/wuxingyu/LAPO-D)
+[![LAPO-I](https://img.shields.io/badge/LAPO--I-1f86c2?style=for-the-badge&logo=huggingface&logoColor=yellow)](https://huggingface.co/wuxingyu/LAPO-I)
 </div>
 
 <br>
@@ -24,7 +25,7 @@ LAPO: Internalizing Reasoning Efficiency via Length-Adaptive Policy Optimization
 
 ## 🎉 News
 *   **[2025-7-22]** Our paper, **LAPO: Internalizing Reasoning Efficiency via Length-Adaptive Policy Optimization**, is now available on arXiv!
-*   **[Coming Soon]** We plan to release the LAPO-trained models and training configurations. Stay tuned!
+*   **[2025-9-15]** **LAPO-D** and **LAPO-I** models are now available on huggingface!
 
 ---
 
